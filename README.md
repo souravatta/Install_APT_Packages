@@ -1,38 +1,79 @@
-Role Name
-=========
+Install apt Packages
+=====================
 
-A brief description of the role goes here.
+The playbook aims to install apt packages. The playbook will prompt to enter the packages which the user want to install on the hosts. It will take more than one package name, each separated by comma.
+
+---
 
 Requirements
 ------------
+1) There should be ssh connection between the master node and all other host nodes.
+2) Package name to be installed should be valid. Example: tree, npm, zip etc.
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+---
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+| Name               |                                                                         |
+|--------------------|-------------------------------------------------------------------------|
+| packages           | Store the name of packages to install in form of array, comma seperated |
+| list_package       | Store the packages name after spliting                                  |
 
-Dependencies
-------------
+---
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+Example 1 Playbook
+------------------
 
-Example Playbook
-----------------
+```yaml
+- name: Install packages on nodes using apt-get
+  hosts: all
+  vars_prompt:
+    - name: packages
+      prompt: "Name the packages you want to install, separated by commas"
+      private: no
+  roles:
+    - install-packages
+```
+---
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Example 2 Playbook
+------------------
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```yaml
+- name: Run apt-get update
+  apt:
+    update_cache: yes
+  become: true
+  become_method: sudo
+
+- name: Install packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ list_package }}"
+  become: true
+  become_method: sudo
+```
+---
+
+Usage
+-----
+1) After you clone this repo to your desktop, go to its root directory and change the files **ansible.cfg** and **ansiserver**.
+2) In file **ansiserver**, add the hosts you want to run the playbook. 
+3) In file **ansible.cfg** change the path of inventory file.
+4) If the ssh user used to login hosts doesn't have ssh password, then run the playbook using `ansible-playbook deploy.yml`.
+5) If the ssh user used to login hosts have ssh password, then run the playbook using `ansible-playbook deploy.yml -k`. It will prompt for `ssh password`.
+
+If you want to check what are the changes playbook will make rather than making them, use `--check` with ansible-playbook to be execute.
+
+Example: `ansible-playbook deploy.yml --check`
+
+>You can check out the full description about `--check` [here](https://docs.ansible.com/ansible/latest/user_guide/playbooks_checkmode.html)
+
+---
 
 License
 -------
 
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+MIT
