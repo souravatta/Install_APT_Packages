@@ -70,10 +70,3 @@ If you want to check what are the changes playbook will make rather than making 
 Example: `ansible-playbook deploy.yml --check`
 
 >You can check out the full description about `--check` [here](https://docs.ansible.com/ansible/latest/user_guide/playbooks_checkmode.html)
-
----
-
-License
--------
-
-MIT
