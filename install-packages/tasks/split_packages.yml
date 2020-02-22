@@ -1,0 +1,5 @@
+---
+
+- name: Split the packages
+  set_fact:
+    list_package: "{{ packages.split(',') }}"

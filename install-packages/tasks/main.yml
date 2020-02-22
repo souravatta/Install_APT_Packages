@@ -1,0 +1,6 @@
+---
+# tasks file for install-packages
+
+- include_tasks: split_packages.yml
+
+- include_tasks: package_install.yml 

@@ -1,0 +1,10 @@
+---
+
+- name: Install packages on nodes using apt-get
+  hosts: all
+  vars_prompt:
+    - name: packages
+      prompt: "Name the packages you want to install, separated by commas"
+      private: no
+  roles:
+    - install-packages

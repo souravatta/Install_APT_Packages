@@ -1,0 +1,14 @@
+---
+- name: Run apt-get update
+  apt:
+    update_cache: yes
+  become: true
+  become_method: sudo
+
+- name: Install packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ list_package }}" 
+  become: true
+  become_method: sudo
